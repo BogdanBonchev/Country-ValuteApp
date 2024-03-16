@@ -8,41 +8,41 @@
 import UIKit
 
 protocol StorageManagerProtocol {
-    var flag: [String:UIImage?] {get}
-    var gerb: [String:UIImage?] {get}
     func flag(country: Country) -> UIImage?
     func saveFlag(country: Country, image: UIImage?) 
     func gerb(country: Country) -> UIImage?
     func saveGerb(country: Country, image: UIImage?)
+    var flagCach: NSCache<NSString, UIImage> {get}
+    var gerbCach: NSCache<NSString, UIImage> {get}
 }
 
 class StorageManager: StorageManagerProtocol {
-  
+    
+    var gerbCach = NSCache<NSString, UIImage>()
+    var flagCach = NSCache<NSString, UIImage>()
+    
     static var shared = StorageManager()
-    var icon = [String:UIImage?]()
-    var flag = [String:UIImage?]()
-    var gerb = [String:UIImage?]()
     
     private init(){}
     
     func flag(country: Country) -> UIImage? {
         guard let name = country.name?.common else { return nil }
-        return flag[name] ?? nil
+        return flagCach.object(forKey: name as NSString)
     }
     
     func saveFlag(country: Country, image: UIImage?) {
-        guard let name = country.name?.common else { return }
-        flag[name] = image
-        
+        guard let name = country.name?.common, let image = image else { return }
+        flagCach.setObject(image, forKey: name as NSString)
     }
     
     func gerb(country: Country) -> UIImage? {
         guard let gerbCountry = country.coatOfArms?.png else { return nil }
-        return gerb[gerbCountry] ?? nil
+        return gerbCach.object(forKey: gerbCountry as NSString)
     }
     
     func saveGerb(country: Country, image: UIImage?) {
-        guard let gerbCountry = country.coatOfArms?.png else { return }
-        gerb[gerbCountry] = image
+        guard let gerbCountry = country.coatOfArms?.png,
+              let imageGerb = image else { return }
+        gerbCach.setObject(imageGerb, forKey: gerbCountry as NSString)
     }
 }

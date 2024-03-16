@@ -14,8 +14,6 @@ protocol MainPresenterProtocol{
     func flag(country: Country)-> UIImage?
 }
 
-
-
 class MainPresenter: MainPresenterProtocol {
     private(set) var storage: StorageManagerProtocol
     weak var delegate: MainDelegateProtocol?
@@ -32,30 +30,24 @@ class MainPresenter: MainPresenterProtocol {
         let urlString = apiManager.fechUrl(type: .country)
         guard let url = URL(string: urlString) else {
             throw NetworkError.invalidUrl
-            
         }
-        
             networkManager.fetchData(url: url) { [weak self] result in
                 switch result {
                 case .success(let data):
                     do {
-                        let loadingQueue = DispatchQueue(label: "com.bonchev.loadingQueu-concurrent", attributes: .concurrent)
+                        let loadingQueue = DispatchQueue(label: "com.bonchev.loadingQueue-concurrent", attributes: .concurrent)
                         let dispatchGroup = DispatchGroup()
-                        
                         let countryes = try JSONDecoder().decode([Country].self, from: data)
-                        
                         let regions = self?.fetchSections(arrayCountryes: countryes)
-                        let sortedCountryes = countryes.sorted{country,_ in
+                        let sortedCountryes = countryes.sorted{ country,_ in
                             return country.region == regions?.first
                         }
-                        
                         for country in sortedCountryes {
                             loadingQueue.async {
                                 if country.region == regions?.first {
                                     dispatchGroup.enter()
                                     dispatchGroup.enter()
                                 }
-                                
                                 self?.updateFlag(country: country){
                                     if country.region == regions?.first {
                                         dispatchGroup.leave()
@@ -66,10 +58,8 @@ class MainPresenter: MainPresenterProtocol {
                                         dispatchGroup.leave()
                                     }
                                 }
-                                
                             }
                         }
-                        
                         dispatchGroup.notify(queue: .main){
                             let sortedContryes = countryes.sorted{$0.name?.common ?? "" < $1.name?.common ?? ""}
                             self?.delegate?.fetchCountrues(arrayCountryes: sortedContryes)
@@ -87,7 +77,6 @@ class MainPresenter: MainPresenterProtocol {
     
     private func updateFlag(country: Country, copletion: @escaping()->Void){
         guard let png = country.flags?.png, let url = URL(string: png) else { return }
-       
         networkManager.fetchData(url: url) { result in
             switch result {
             case .success(let data):
@@ -105,7 +94,6 @@ class MainPresenter: MainPresenterProtocol {
             comletion()
             return
         }
-        
         networkManager.fetchData(url: pngUrl) { result in
             switch result {
                 case .success(let data):

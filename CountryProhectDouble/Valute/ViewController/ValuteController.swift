@@ -85,6 +85,8 @@ class ValuteController: UIViewController {
     }
 }
 
+//MARK: - Extantions for collectionView
+
 extension ValuteController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -98,7 +100,6 @@ extension ValuteController: UICollectionViewDelegate, UICollectionViewDataSource
             valute = searchValute[indexPath.item]
         }
         cell.setup(with: valute)
-        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -111,6 +112,7 @@ extension ValuteController: UICollectionViewDelegate, UICollectionViewDataSource
     }
 }
 
+//MARK: - Extantion valutePresenterDeleagate
 
 extension ValuteController: valutePresenterDeleagate{
     
@@ -122,6 +124,8 @@ extension ValuteController: valutePresenterDeleagate{
         print(error)
     }
 }
+
+//MARK: - Extantion for search updating
 
 extension ValuteController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {

@@ -9,18 +9,6 @@ import UIKit
 
 //MARK: URL for parsing
 
-let adressURL = "https://restcountries.com/v3.1/all"
-
-// MARK: - CountryElement
-
-//"currencies": {
-//      "ERN": {
-//        "name": "Eritrean nakfa",
-//        "symbol": "Nfk"
-//      }
-//    }
-
-
 struct Country: Codable {
     let name: Name?
     let region: String?
@@ -37,15 +25,10 @@ struct Country: Codable {
     let altSpellings: [String]
     let translations: [String: Translation]
     let capitalInfo: CapitalInfo?
-    let gini: [String: Double]?
-    let timezones: [String]
     let unMember: Bool
-    let latlng: [Double]
-    let landlocked: Bool
     let borders: [String]?
     let independent: Bool?
     let capital: [String]?
-    let car: Car?
     let status: String?
     
     
@@ -62,12 +45,6 @@ struct Flags: Codable{
 
 struct CapitalInfo: Codable {
     let latlng: [Double]?
-}
-
-// MARK: - Car
-
-struct Car: Codable {
-    let side: String?
 }
 
 struct Side: Codable {

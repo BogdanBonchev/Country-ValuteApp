@@ -26,6 +26,8 @@ protocol ApiManagerProtocol {
 }
 
 class ApiManager: ApiManagerProtocol {
+    let urlComponents = URLComponents()
+    
     func fechUrl(type: TypeUrl) -> String {
         return type.url
     }

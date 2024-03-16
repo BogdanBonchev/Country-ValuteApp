@@ -10,9 +10,7 @@ import UIKit
 protocol MainDelegateProtocol: AnyObject {
     func fetchCountrues(arrayCountryes: [Country])
     func fetchInvalid(error: NetworkError)
-    
 }
-
 
 class MainController: UIViewController {
     
@@ -40,6 +38,13 @@ class MainController: UIViewController {
         
     //MARK: Private properties
     
+    private lazy var loadIndicate: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.color = .black
+        return indicator
+    }()
+    
     private lazy var countryTable: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -64,29 +69,34 @@ class MainController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     //MARK: Life cicle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .brown
         title = "Страны"
         addviews()
         applyConsttraints()
         navigationItem.searchController = search
-//        try? mainPresenter.fetchCountryes()
+        loadIndicate.startAnimating()
+        try? mainPresenter.fetchCountryes()
     }
     
     //MARK: Addviews
     
     private func addviews(){
         view.addSubview(countryTable)
+        view.addSubview(loadIndicate)
     }
     
     //MARK: Constraints
     
     private func applyConsttraints(){
         NSLayoutConstraint.activate([
+            
+            loadIndicate.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadIndicate.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             countryTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             countryTable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             countryTable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -138,9 +148,9 @@ extension MainController: UITableViewDelegate, UITableViewDataSource {
 
 extension MainController: MainDelegateProtocol {
   
-    
     func fetchCountrues(arrayCountryes: [Country]) {
         self.countryes = arrayCountryes
+        loadIndicate.stopAnimating()
     }
     
     func fetchInvalid(error: NetworkError) {
